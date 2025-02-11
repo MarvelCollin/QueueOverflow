@@ -2,35 +2,40 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import Header from './components/Header'
+import Questions from './pages/Questions'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
-      <div className="flex gap-8 mb-8">
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="h-24 hover:drop-shadow-xl transition-all" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="h-24 animate-spin-slow hover:drop-shadow-xl transition-all" alt="React logo" />
-        </a>
-      </div>
-      <h1 className="text-4xl font-bold mb-8">Vite + React</h1>
-      <div className="bg-white p-8 rounded-xl shadow-lg">
-        <button 
-          onClick={() => setCount((count) => count + 1)}
-          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mb-4 transition-colors"
-        >
-          count is {count}
-        </button>
-        <p className="text-gray-600">
-          Edit <code className="bg-gray-100 px-2 py-1 rounded">src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="mt-8 text-gray-500">
-        Click on the Vite and React logos to learn more
-      </p>
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      
+      <main className="container mx-auto pt-20 px-4">
+        <div className="grid grid-cols-12 gap-4">
+          {/* Left Sidebar */}
+          <div className="hidden md:block col-span-2">
+            <nav className="sticky top-20">
+              <a href="#" className="block py-2 text-gray-600 hover:text-orange-500">Home</a>
+              <a href="#" className="block py-2 text-gray-600 hover:text-orange-500">Questions</a>
+              <a href="#" className="block py-2 text-gray-600 hover:text-orange-500">Tags</a>
+              <a href="#" className="block py-2 text-gray-600 hover:text-orange-500">Users</a>
+            </nav>
+          </div>
+
+          {/* Main Content */}
+          <div className="col-span-12 md:col-span-7">
+            <Questions />
+          </div>
+
+          {/* Right Sidebar */}
+          <div className="hidden md:block col-span-3">
+            <div className="bg-yellow-50 rounded-lg p-4 mb-4">
+              <h2 className="font-bold mb-2">The QueueOverflow Blog</h2>
+              <p className="text-sm text-gray-600">Coming soon...</p>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   )
 }
