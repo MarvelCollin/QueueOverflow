@@ -12,38 +12,25 @@ export default function QuestionCard({ question, index, onClick }: QuestionCardP
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -4 }}
       transition={{ duration: 0.3, delay: index * 0.1 }}
       onClick={onClick}
-      className="group cursor-pointer"
+      className="group"
     >
-      <div className="bg-gradient-to-r from-theme-bg-card/90 to-theme-bg-card/80
-                   backdrop-blur-xl rounded-2xl p-6 border border-theme-accent-primary/10
-                   hover:border-theme-accent-primary/30 transition-all duration-500">
+      <div className="card p-6 hover:-translate-y-1 cursor-pointer">
         <div className="flex gap-6">
           <div className="flex flex-col items-center gap-4">
-            <motion.div 
-              whileHover={{ scale: 1.05 }}
-              className="w-20 p-3 rounded-xl bg-theme-accent-blue/10 
-                      text-theme-accent-blue group-hover:bg-theme-accent-blue/20 
-                      transition-colors text-center"
-            >
+            <div className="w-20 p-3 rounded-xl bg-indigo-50 text-indigo-600 text-center">
               <span className="block text-xl font-bold">{question.viewedCounter}</span>
-              <span className="text-xs text-theme-text-muted">views</span>
-            </motion.div>
+              <span className="text-xs text-slate-500">views</span>
+            </div>
 
             {question.isSolved && (
-              <motion.div 
-                whileHover={{ scale: 1.05 }}
-                className="w-20 p-2 rounded-xl bg-theme-accent-green/10 
-                        text-theme-accent-green flex flex-col items-center
-                        group-hover:bg-theme-accent-green/20 transition-colors"
-              >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+              <div className="w-20 p-2 rounded-xl bg-emerald-50 text-emerald-600 text-center">
+                <svg className="w-6 h-6 mx-auto" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" />
                 </svg>
                 <span className="text-xs mt-1">solved</span>
-              </motion.div>
+              </div>
             )}
           </div>
 

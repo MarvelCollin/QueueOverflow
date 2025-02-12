@@ -2,184 +2,83 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Add this near the top of your CSS */
+/* Force light theme and remove any dark mode */
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
-/* Force dark mode */
-html {
-  background: #030712;
-  color: #f9fafb;
+/* Base styles */
+html, body {
+  @apply bg-white text-slate-900;
 }
 
-/* Add colorful scrollbar */
-::-webkit-scrollbar {
-  width: 10px;
+/* Color Variables */
+:root {
+  --primary: #4f46e5;
+  --secondary: #ec4899;
+  --accent: #0ea5e9;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --error: #ef4444;
 }
 
-::-webkit-scrollbar-track {
-  background: theme('colors.theme.bg.primary');
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(
-    to bottom,
-    theme('colors.theme.accent.primary'),
-    theme('colors.theme.accent.secondary')
-  );
-  border-radius: 5px;
-}
-
-@layer base {
-  :root {
-    --color-background: 10, 14, 28;
-    --color-surface: 17, 23, 41;
-    --color-overlay: 26, 32, 53;
-
-    --color-text-primary: 248, 250, 252;
-    --color-text-secondary: 203, 213, 225;
-    --color-text-muted: 148, 163, 184;
-
-    --color-primary: 124, 58, 237;
-    --color-secondary: 236, 72, 153;
-    --color-accent: 56, 189, 248;
-
-    --color-success: 34, 197, 94;
-    --color-warning: 234, 179, 8;
-    --color-error: 239, 68, 68;
-    --color-info: 59, 130, 246;
-  }
-}
-
-body {
-  @apply bg-theme-bg-primary text-theme-text-primary min-h-screen;
-}
-
+/* Component styles */
 @layer components {
-  .bg-base {
-    @apply bg-[rgb(var(--color-background))];
-  }
-
-  .bg-surface {
-    @apply bg-[rgb(var(--color-surface))];
-  }
-
-  .bg-overlay {
-    @apply bg-[rgb(var(--color-overlay))];
-  }
-
-  .text-primary {
-    @apply text-[rgb(var(--color-text-primary))];
-  }
-
-  .text-secondary {
-    @apply text-[rgb(var(--color-text-secondary))];
-  }
-
-  .text-muted {
-    @apply text-[rgb(var(--color-text-muted))];
-  }
-
-  .bg-gradient-brand {
-    @apply bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-secondary))];
-  }
-
-  .bg-gradient-cool {
-    @apply bg-gradient-to-r from-[rgb(var(--color-accent))] to-[rgb(var(--color-info))];
-  }
-
   .card {
-    @apply bg-overlay backdrop-blur-xl rounded-xl border border-[rgb(var(--color-primary))/10]
-           hover:border-[rgb(var(--color-primary))/30] transition-all duration-300;
-  }
-
-  .btn-primary {
-    @apply bg-gradient-brand text-[rgb(var(--color-text-primary))] 
-           px-6 py-2.5 rounded-xl font-medium 
-           hover:shadow-lg hover:shadow-[rgb(var(--color-primary))/25]
+    @apply bg-white rounded-xl shadow-lg hover:shadow-xl
+           border border-indigo-100 hover:border-indigo-200
            transition-all duration-300;
   }
 
-  .btn-secondary {
-    @apply border border-[rgb(var(--color-accent))/30] text-[rgb(var(--color-accent))] 
-           px-4 py-2 rounded-xl hover:bg-[rgb(var(--color-accent))/10]
-           transition-all duration-300;
+  .button-primary {
+    @apply bg-gradient-to-r from-indigo-500 to-purple-500 
+           text-white font-medium px-6 py-2 rounded-xl 
+           hover:opacity-90 transition-all duration-300
+           shadow-md hover:shadow-lg hover:shadow-indigo-500/25;
+  }
+
+  .input-search {
+    @apply bg-white/80 border border-indigo-100
+           focus:border-indigo-300 focus:ring-2 focus:ring-indigo-500/20
+           rounded-xl px-4 py-2 w-full
+           text-slate-900 placeholder:text-slate-400;
   }
 
   .tag {
     @apply px-3 py-1 rounded-full text-xs font-medium
-           bg-[rgb(var(--color-accent))/10] text-[rgb(var(--color-accent))]
-           hover:bg-[rgb(var(--color-accent))] hover:text-white
-           transition-all duration-300;
+           bg-indigo-50 text-indigo-600
+           hover:bg-indigo-100 transition-all duration-300;
   }
 
-  .status-success {
-    @apply text-[rgb(var(--color-success))] bg-[rgb(var(--color-success))/10];
-  }
-
-  .status-warning {
-    @apply text-[rgb(var(--color-warning))] bg-[rgb(var(--color-warning))/10];
-  }
-
-  .status-error {
-    @apply text-[rgb(var(--color-error))] bg-[rgb(var(--color-error))/10];
-  }
-
-  .glass {
-    @apply backdrop-blur-xl bg-white/10;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+  .sidebar-item {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl
+           text-slate-600 hover:text-indigo-600
+           hover:bg-indigo-50 transition-all duration-300;
   }
 }
 
-/* Add glow effects */
-.glow {
-  box-shadow: 0 0 20px theme('colors.theme.accent.primary' / 20%);
+/* Animation for gradient backgrounds */
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 8s linear infinite;
 }
 
-.glow-hover:hover {
-  box-shadow: 0 0 30px theme('colors.theme.accent.primary' / 30%);
-}
-
-@layer utilities {
-  .animation-delay-2000 {
-    animation-delay: 2s;
-  }
-  .animation-delay-4000 {
-    animation-delay: 4s;
-  }
-}
-
-@keyframes blob {
-  0% {
-    transform: translate(0px, 0px) scale(1);
-  }
-  33% {
-    transform: translate(30px, -50px) scale(1.1);
-  }
-  66% {
-    transform: translate(-20px, 20px) scale(0.9);
-  }
-  100% {
-    transform: translate(0px, 0px) scale(1);
-  }
-}
-
-.animate-blob {
-  animation: blob 7s infinite;
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 /* Glass effect */
-.bg-glass-dark {
-  @apply bg-theme-bg-secondary/30 backdrop-blur-xl;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+.glass {
+  @apply bg-white/70 backdrop-blur-xl border border-white/20;
 }
 
-/* Card hover effect */
-.hover-card-effect {
-  @apply transition-all duration-300;
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
-  }
+/* Gradient backgrounds */
+.bg-gradient-1 {
+  @apply bg-gradient-to-r from-indigo-500/10 to-purple-500/10;
+}
+
+.bg-gradient-2 {
+  @apply bg-gradient-to-r from-sky-500/10 to-indigo-500/10;
 }

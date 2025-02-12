@@ -17,20 +17,12 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-theme-bg-primary text-theme-text-primary overflow-hidden">
-      {/* Enhanced background effects */}
-      <div className="fixed inset-0">
-        {/* Colorful gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-theme-accent-primary/10 via-theme-bg-primary to-theme-accent-secondary/10" />
-        
-        {/* Animated colorful orbs */}
-        <div className="absolute top-0 -left-4 w-96 h-96 bg-theme-accent-primary/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob" />
-        <div className="absolute top-0 -right-4 w-96 h-96 bg-theme-accent-secondary/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000" />
-        <div className="absolute -bottom-8 left-20 w-96 h-96 bg-theme-accent-blue/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000" />
-        <div className="absolute bottom-0 right-20 w-96 h-96 bg-theme-accent-yellow/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-6000" />
-        
-        {/* Grain effect */}
-        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'url("/noise.png")', backgroundRepeat: 'repeat' }} />
+    <div className="min-h-screen bg-white text-slate-900">
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-1 animate-gradient" />
+        <div className="absolute top-0 -left-4 w-96 h-96 bg-indigo-500/10 rounded-full mix-blend-multiply filter blur-xl animate-blob" />
+        <div className="absolute top-0 -right-4 w-96 h-96 bg-purple-500/10 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000" />
+        <div className="absolute -bottom-8 left-20 w-96 h-96 bg-sky-500/10 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000" />
       </div>
 
       <div className="relative z-10">
