@@ -1,3 +1,185 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Add this near the top of your CSS */
+:root {
+  color-scheme: dark;
+}
+
+/* Force dark mode */
+html {
+  background: #030712;
+  color: #f9fafb;
+}
+
+/* Add colorful scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: theme('colors.theme.bg.primary');
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    to bottom,
+    theme('colors.theme.accent.primary'),
+    theme('colors.theme.accent.secondary')
+  );
+  border-radius: 5px;
+}
+
+@layer base {
+  :root {
+    --color-background: 10, 14, 28;
+    --color-surface: 17, 23, 41;
+    --color-overlay: 26, 32, 53;
+
+    --color-text-primary: 248, 250, 252;
+    --color-text-secondary: 203, 213, 225;
+    --color-text-muted: 148, 163, 184;
+
+    --color-primary: 124, 58, 237;
+    --color-secondary: 236, 72, 153;
+    --color-accent: 56, 189, 248;
+
+    --color-success: 34, 197, 94;
+    --color-warning: 234, 179, 8;
+    --color-error: 239, 68, 68;
+    --color-info: 59, 130, 246;
+  }
+}
+
+body {
+  @apply bg-theme-bg-primary text-theme-text-primary min-h-screen;
+}
+
+@layer components {
+  .bg-base {
+    @apply bg-[rgb(var(--color-background))];
+  }
+
+  .bg-surface {
+    @apply bg-[rgb(var(--color-surface))];
+  }
+
+  .bg-overlay {
+    @apply bg-[rgb(var(--color-overlay))];
+  }
+
+  .text-primary {
+    @apply text-[rgb(var(--color-text-primary))];
+  }
+
+  .text-secondary {
+    @apply text-[rgb(var(--color-text-secondary))];
+  }
+
+  .text-muted {
+    @apply text-[rgb(var(--color-text-muted))];
+  }
+
+  .bg-gradient-brand {
+    @apply bg-gradient-to-r from-[rgb(var(--color-primary))] to-[rgb(var(--color-secondary))];
+  }
+
+  .bg-gradient-cool {
+    @apply bg-gradient-to-r from-[rgb(var(--color-accent))] to-[rgb(var(--color-info))];
+  }
+
+  .card {
+    @apply bg-overlay backdrop-blur-xl rounded-xl border border-[rgb(var(--color-primary))/10]
+           hover:border-[rgb(var(--color-primary))/30] transition-all duration-300;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-brand text-[rgb(var(--color-text-primary))] 
+           px-6 py-2.5 rounded-xl font-medium 
+           hover:shadow-lg hover:shadow-[rgb(var(--color-primary))/25]
+           transition-all duration-300;
+  }
+
+  .btn-secondary {
+    @apply border border-[rgb(var(--color-accent))/30] text-[rgb(var(--color-accent))] 
+           px-4 py-2 rounded-xl hover:bg-[rgb(var(--color-accent))/10]
+           transition-all duration-300;
+  }
+
+  .tag {
+    @apply px-3 py-1 rounded-full text-xs font-medium
+           bg-[rgb(var(--color-accent))/10] text-[rgb(var(--color-accent))]
+           hover:bg-[rgb(var(--color-accent))] hover:text-white
+           transition-all duration-300;
+  }
+
+  .status-success {
+    @apply text-[rgb(var(--color-success))] bg-[rgb(var(--color-success))/10];
+  }
+
+  .status-warning {
+    @apply text-[rgb(var(--color-warning))] bg-[rgb(var(--color-warning))/10];
+  }
+
+  .status-error {
+    @apply text-[rgb(var(--color-error))] bg-[rgb(var(--color-error))/10];
+  }
+
+  .glass {
+    @apply backdrop-blur-xl bg-white/10;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Add glow effects */
+.glow {
+  box-shadow: 0 0 20px theme('colors.theme.accent.primary' / 20%);
+}
+
+.glow-hover:hover {
+  box-shadow: 0 0 30px theme('colors.theme.accent.primary' / 30%);
+}
+
+@layer utilities {
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+}
+
+@keyframes blob {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+/* Glass effect */
+.bg-glass-dark {
+  @apply bg-theme-bg-secondary/30 backdrop-blur-xl;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* Card hover effect */
+.hover-card-effect {
+  @apply transition-all duration-300;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
+  }
+}

@@ -14,6 +14,7 @@ export interface Question {
   viewedCounter: number;
   createdAt: string;
   user?: User;
+  votes?: Vote;
 }
 
 export interface Answer {
@@ -23,6 +24,7 @@ export interface Answer {
   userId: number;
   createdAt: string;
   user?: User;
+  votes?: Vote;
 }
 
 export interface AnswerDetail {
@@ -40,4 +42,9 @@ export interface Comment {
   userId: number;
   createdAt: string;
   user?: User;
+}
+
+export interface Vote {
+  upvotes: number;
+  downvotes: number;
 }
