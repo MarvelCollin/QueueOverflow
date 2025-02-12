@@ -2,11 +2,14 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Question, Answer } from '../types';
 import { api } from '../services/api';
+import RichTextEditor from '../components/RichTextEditor';
+import AnswerEditor from '../components/AnswerEditor';
 
 export default function QuestionDetail() {
   const [question, setQuestion] = useState<Question | null>(null);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [loading, setLoading] = useState(true);
+  const [answer, setAnswer] = useState('');
 
   useEffect(() => {
     api.questions.getById(1).then(data => {
@@ -14,6 +17,11 @@ export default function QuestionDetail() {
       setLoading(false);
     });
   }, []);
+
+  const handleAnswerSubmit = (answerContent: string) => {
+    // Handle answer submission here
+    console.log('Answer submitted:', answerContent);
+  };
 
   if (loading || !question) {
     return (
@@ -103,11 +111,16 @@ export default function QuestionDetail() {
               </div>
 
               <div className="flex-1">
-                <div className="prose max-w-none">
-                  <p className="text-slate-700 leading-relaxed">
-                    {question.description}
-                  </p>
-                </div>
+                <div className="prose prose-indigo max-w-none
+                           prose-headings:text-slate-900 prose-headings:font-bold
+                           prose-p:text-slate-700 prose-p:leading-relaxed
+                           prose-strong:text-slate-900 prose-strong:font-semibold
+                           prose-code:text-indigo-600 prose-code:bg-indigo-50 
+                           prose-code:px-2 prose-code:py-0.5 prose-code:rounded
+                           prose-pre:bg-indigo-50 prose-pre:p-4 prose-pre:rounded-lg
+                           prose-a:text-indigo-600 hover:prose-a:text-indigo-700"
+                dangerouslySetInnerHTML={{ __html: question.description }}
+              />
 
                 {/* Tags */}
                 <div className="flex flex-wrap gap-2 mt-6">
@@ -161,24 +174,7 @@ export default function QuestionDetail() {
         <div className="mt-8 bg-white shadow-lg rounded-2xl border border-indigo-100 overflow-hidden">
           <div className="p-8">
             <h2 className="text-xl font-bold text-slate-900 mb-6">2 Answers</h2>
-            
-            <div className="bg-indigo-50/50 rounded-xl p-6">
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">Your Answer</h3>
-              <textarea 
-                className="w-full h-32 p-4 bg-white border border-indigo-200 rounded-xl 
-                         focus:ring-2 focus:ring-indigo-500 focus:border-transparent
-                         transition-all duration-300 placeholder-slate-400"
-                placeholder="Write your answer here..."
-              />
-              <div className="mt-4">
-                <button className="bg-gradient-to-r from-indigo-500 to-purple-500 
-                               text-white px-6 py-2 rounded-xl font-medium
-                               hover:opacity-90 transition-all duration-300
-                               shadow-md hover:shadow-xl hover:shadow-indigo-500/20">
-                  Post Your Answer
-                </button>
-              </div>
-            </div>
+            <AnswerEditor onSubmit={handleAnswerSubmit} />
           </div>
         </div>
       </div>

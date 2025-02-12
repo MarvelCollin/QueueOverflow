@@ -1,74 +1,141 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import Prism from 'prismjs';
 
 interface RichTextEditorProps {
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
+    value: string;
+    onChange: (value: string) => void;
+    placeholder?: string;
 }
 
+const SUPPORTED_LANGUAGES = [
+    { label: 'JavaScript', value: 'javascript' },
+    { label: 'TypeScript', value: 'typescript' },
+    { label: 'Python', value: 'python' },
+    { label: 'Java', value: 'java' },
+    { label: 'JSX', value: 'jsx' },
+    { label: 'TSX', value: 'tsx' },
+    { label: 'HTML', value: 'html' },
+    { label: 'CSS', value: 'css' },
+];
+
 export default function RichTextEditor({ value, onChange, placeholder }: RichTextEditorProps) {
-  const [showToolbar, setShowToolbar] = useState(false);
+    const editorRef = useRef<HTMLDivElement>(null);
+    const [lastSelection, setLastSelection] = useState<number>(0);
 
-  const formatText = (command: string, value?: string) => {
-    document.execCommand(command, false, value);
-  };
+    const updateContent = useCallback((newContent: string) => {
+        if (editorRef.current) {
 
-  const handleCodeBlock = () => {
-    const selection = window.getSelection()?.toString();
-    if (selection) {
-      const codeBlock = `\`\`\`\n${selection}\n\`\`\``;
-      document.execCommand('insertText', false, codeBlock);
-    }
-  };
+            editorRef.current.innerHTML = newContent;
 
-  return (
-    <div className="w-full rounded-xl border border-indigo-200 overflow-hidden">
-      {/* Toolbar */}
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex items-center gap-2 p-2 bg-indigo-50/50 border-b border-indigo-200"
-      >
-        <button onClick={() => formatText('bold')} 
-                className="p-2 hover:bg-indigo-100 rounded-lg transition-colors">
-          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M6 4h8a4 4 0 014 4 4 4 0 01-4 4H6z"></path>
-            <path d="M6 12h9a4 4 0 014 4 4 4 0 01-4 4H6z"></path>
-          </svg>
-        </button>
-        <button onClick={() => formatText('italic')}
-                className="p-2 hover:bg-indigo-100 rounded-lg transition-colors">
-          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M10 4v2h2.21l-3.42 12H6v2h8v-2h-2.21l3.42-12H18V4z"></path>
-          </svg>
-        </button>
-        <button onClick={() => formatText('underline')}
-                className="p-2 hover:bg-indigo-100 rounded-lg transition-colors">
-          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M6 21h12v-2H6zM12 17a6 6 0 006-6V3h-2.5v8a3.5 3.5 0 01-7 0V3H6v8a6 6 0 006 6z"></path>
-          </svg>
-        </button>
-        <div className="w-px h-6 bg-indigo-200"></div>
-        <button onClick={handleCodeBlock}
-                className="p-2 hover:bg-indigo-100 rounded-lg transition-colors">
-          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M8 3H6v2h2V3zm0 16H6v2h2v-2zm8-16h-2v2h2V3zm0 16h-2v2h2v-2zm2-6h2v-2h-2v2zm0 6h2v-2h-2v2zM4 7h2V5H4v2zm0 4h2V9H4v2zm0 4h2v-2H4v2zm0 4h2v-2H4v2z"></path>
-          </svg>
-        </button>
-      </motion.div>
 
-      {/* Editor */}
-      <div
-        contentEditable
-        className="min-h-[200px] p-4 focus:outline-none prose prose-indigo max-w-none
-                   prose-pre:bg-indigo-50 prose-pre:p-4 prose-pre:rounded-lg
-                   prose-code:text-indigo-600 prose-code:bg-indigo-50 prose-code:px-2 prose-code:py-0.5 prose-code:rounded
-                   prose-a:text-indigo-600 hover:prose-a:text-indigo-700"
-        placeholder={placeholder}
-        onInput={(e) => onChange(e.currentTarget.innerHTML)}
-        dangerouslySetInnerHTML={{ __html: value }}
-      />
-    </div>
-  );
+            const selection = window.getSelection();
+            const range = document.createRange();
+
+            let currentNode = editorRef.current;
+            let currentPos = 0;
+
+
+            const findPosition = (node: Node): boolean => {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    const length = node.textContent?.length || 0;
+                    if (currentPos + length >= lastSelection) {
+                        range.setStart(node, lastSelection - currentPos);
+                        range.collapse(true);
+                        selection?.removeAllRanges();
+                        selection?.addRange(range);
+                        return true;
+                    }
+                    currentPos += length;
+                }
+
+                for (const child of Array.from(node.childNodes)) {
+                    if (findPosition(child)) return true;
+                }
+                return false;
+            };
+
+            findPosition(editorRef.current);
+        }
+    }, [lastSelection]);
+
+    const handleInput = (event: React.FormEvent<HTMLDivElement>) => {
+        const newContent = event.currentTarget.innerHTML;
+        const selection = window.getSelection();
+
+        if (selection) {
+
+            const range = selection.getRangeAt(0);
+            const preCaretRange = range.cloneRange();
+            preCaretRange.selectNodeContents(event.currentTarget);
+            preCaretRange.setEnd(range.endContainer, range.endOffset);
+            setLastSelection(preCaretRange.toString().length);
+        }
+
+        onChange(newContent);
+    };
+
+    const insertFormat = (format: string) => {
+        document.execCommand(format, false);
+        if (editorRef.current) {
+            onChange(editorRef.current.innerHTML);
+        }
+    };
+
+    const insertCodeBlock = () => {
+        const codeBlock = `
+      <div class="code-block" contenteditable="false">
+        <div class="code-header bg-gray-800 text-gray-300 px-4 py-2 flex justify-between">
+          <select class="bg-transparent border-0">
+            ${SUPPORTED_LANGUAGES.map(lang =>
+            `<option value="${lang.value}">${lang.label}</option>`
+        ).join('')}
+          </select>
+        </div>
+        <div class="code-content p-4 bg-gray-900" contenteditable="true">
+          <code class="text-gray-100"></code>
+        </div>
+      </div>
+      <p></p>
+    `;
+
+        document.execCommand('insertHTML', false, codeBlock);
+        if (editorRef.current) {
+            onChange(editorRef.current.innerHTML);
+            Prism.highlightAll();
+        }
+    };
+
+    return (
+        <div className="w-full rounded-xl border border-indigo-200 overflow-hidden">
+            <motion.div className="flex gap-2 p-2 bg-indigo-50/50 border-b border-indigo-200">
+                <button onClick={() => insertFormat('bold')} className="p-2 hover:bg-indigo-100 rounded">
+                    <b>B</b>
+                </button>
+                <button onClick={() => insertFormat('italic')} className="p-2 hover:bg-indigo-100 rounded">
+                    <i>I</i>
+                </button>
+                <button onClick={() => insertFormat('underline')} className="p-2 hover:bg-indigo-100 rounded">
+                    <u>U</u>
+                </button>
+                <button onClick={insertCodeBlock} className="p-2 hover:bg-indigo-100 rounded">
+                    Code
+                </button>
+            </motion.div>
+
+            <div
+                ref={editorRef}
+                contentEditable
+                className="min-h-[200px] p-4 focus:outline-none"
+                onInput={handleInput}
+                onKeyDown={(e) => {
+                    if (e.key === 'Tab') {
+                        e.preventDefault();
+                        document.execCommand('insertText', false, '  ');
+                    }
+                }}
+                placeholder={placeholder}
+            />
+        </div>
+    );
 }
