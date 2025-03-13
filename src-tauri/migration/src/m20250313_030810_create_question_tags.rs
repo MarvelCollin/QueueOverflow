@@ -1,4 +1,6 @@
 use sea_orm_migration::{prelude::*, schema::*};
+use crate::m20250313_030738_create_questions::Questions;
+use crate::m20250313_030800_create_tags::Tags;
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -11,26 +13,34 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(QuestionTags::Table)
                     .if_not_exists()
-                    .col(integer(QuestionTags::QuestionId).not_null())
-                    .col(integer(QuestionTags::TagId).not_null())
+                    .col(
+                        ColumnDef::new(QuestionTags::QuestionId)
+                            .integer()
+                            .not_null()
+                    )
+                    .col(
+                        ColumnDef::new(QuestionTags::TagId)
+                            .integer()
+                            .not_null()
+                    )
                     .primary_key(
                         Index::create()
                             .col(QuestionTags::QuestionId)
-                            .col(QuestionTags::TagId),
+                            .col(QuestionTags::TagId)
                     )
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk_question_tags_questions")
                             .from(QuestionTags::Table, QuestionTags::QuestionId)
                             .to(Questions::Table, Questions::Id)
-                            .on_delete(ForeignKeyAction::Cascade),
+                            .on_delete(ForeignKeyAction::Cascade)
                     )
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk_question_tags_tags")
                             .from(QuestionTags::Table, QuestionTags::TagId)
                             .to(Tags::Table, Tags::Id)
-                            .on_delete(ForeignKeyAction::Cascade),
+                            .on_delete(ForeignKeyAction::Cascade)
                     )
                     .to_owned(),
             )
@@ -45,20 +55,8 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum QuestionTags {
+pub enum QuestionTags {
     Table,
     QuestionId,
     TagId,
-}
-
-#[derive(DeriveIden)]
-enum Questions {
-    Table,
-    Id,
-}
-
-#[derive(DeriveIden)]
-enum Tags {
-    Table,
-    Id,
 }

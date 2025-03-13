@@ -1,3 +1,4 @@
+use crate::m20250313_030734_create_users::Users;
 use sea_orm_migration::{prelude::*, schema::*};
 
 #[derive(DeriveMigrationName)]
@@ -20,19 +21,27 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Comments::Table)
                     .if_not_exists()
-                    .col(pk_auto(Comments::Id))
-                    .col(text(Comments::Content).not_null())
-                    .col(integer(Comments::UserId).not_null())
                     .col(
-                        timestamp_with_time_zone(Comments::CreatedAt)
+                        ColumnDef::new(Comments::Id)
+                            .integer()
+                            .not_null()
+                            .auto_increment()
+                            .primary_key(),
+                    )
+                    .col(ColumnDef::new(Comments::Content).text().not_null())
+                    .col(ColumnDef::new(Comments::UserId).integer().not_null())
+                    .col(
+                        ColumnDef::new(Comments::CreatedAt)
+                            .timestamp_with_time_zone()
+                            .not_null()
                             .default(Expr::current_timestamp()),
                     )
-                    .col(integer(Comments::ParentId).not_null())
-                    .col(custom_type(
-                        Comments::ParentType,
-                        ParentType::Type.to_string(),
-                        ParentType::Type.to_string(),
-                    ))
+                    .col(ColumnDef::new(Comments::ParentId).integer().not_null())
+                    .col(
+                        ColumnDef::new(Comments::ParentType)
+                            .custom(ParentType::Type.to_string())
+                            .not_null(),
+                    )
                     .foreign_key(
                         ForeignKey::create()
                             .name("fk_comments_users")
@@ -57,7 +66,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Comments {
+pub enum Comments {
     Table,
     Id,
     Content,
@@ -68,13 +77,7 @@ enum Comments {
 }
 
 #[derive(DeriveIden)]
-enum Users {
-    Table,
-    Id,
-}
-
-#[derive(DeriveIden)]
-enum ParentType {
+pub enum ParentType {
     #[sea_orm(iden = "parent_type")]
     Type,
     #[sea_orm(iden = "question")]

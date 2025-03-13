@@ -11,9 +11,24 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Tags::Table)
                     .if_not_exists()
-                    .col(pk_auto(Tags::Id))
-                    .col(string_unique(Tags::Name))
-                    .col(text(Tags::Description).null())
+                    .col(
+                        ColumnDef::new(Tags::Id)
+                            .integer()
+                            .not_null()
+                            .auto_increment()
+                            .primary_key()
+                    )
+                    .col(
+                        ColumnDef::new(Tags::Name)
+                            .string()
+                            .not_null()
+                            .unique_key()
+                    )
+                    .col(
+                        ColumnDef::new(Tags::Description)
+                            .text()
+                            .null()
+                    )
                     .to_owned(),
             )
             .await
@@ -27,7 +42,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Tags {
+pub enum Tags {
     Table,
     Id,
     Name,

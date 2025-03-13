@@ -11,20 +11,68 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Users::Table)
                     .if_not_exists()
-                    .col(pk_auto(Users::Id))
-                    .col(string_unique(Users::Username))
-                    .col(string_unique(Users::Email))
-                    .col(string(Users::PasswordHash))
-                    .col(string(Users::DisplayName))
-                    .col(text(Users::Bio).null())
-                    .col(integer(Users::Reputation).default(0))
                     .col(
-                        timestamp_with_time_zone(Users::CreatedAt)
-                            .default(Expr::current_timestamp()),
+                        ColumnDef::new(Users::Id)
+                            .integer()
+                            .not_null()
+                            .auto_increment()
+                            .primary_key()
                     )
-                    .col(timestamp_with_time_zone(Users::LastLogin).null())
-                    .col(string(Users::AvatarUrl).null())
-                    .col(boolean(Users::IsActive).default(true))
+                    .col(
+                        ColumnDef::new(Users::Username)
+                            .string()
+                            .not_null()
+                            .unique_key()
+                    )
+                    .col(
+                        ColumnDef::new(Users::Email)
+                            .string()
+                            .not_null()
+                            .unique_key()
+                    )
+                    .col(
+                        ColumnDef::new(Users::PasswordHash)
+                            .string()
+                            .not_null()
+                    )
+                    .col(
+                        ColumnDef::new(Users::DisplayName)
+                            .string()
+                            .not_null()
+                    )
+                    .col(
+                        ColumnDef::new(Users::Bio)
+                            .text()
+                            .null()
+                    )
+                    .col(
+                        ColumnDef::new(Users::Reputation)
+                            .integer()
+                            .not_null()
+                            .default(0)
+                    )
+                    .col(
+                        ColumnDef::new(Users::CreatedAt)
+                            .timestamp_with_time_zone()
+                            .not_null()
+                            .default(Expr::current_timestamp())
+                    )
+                    .col(
+                        ColumnDef::new(Users::LastLogin)
+                            .timestamp_with_time_zone()
+                            .null()
+                    )
+                    .col(
+                        ColumnDef::new(Users::AvatarUrl)
+                            .string()
+                            .null()
+                    )
+                    .col(
+                        ColumnDef::new(Users::IsActive)
+                            .boolean()
+                            .not_null()
+                            .default(true)
+                    )
                     .to_owned(),
             )
             .await
@@ -38,7 +86,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Users {
+pub enum Users {
     Table,
     Id,
     Username,

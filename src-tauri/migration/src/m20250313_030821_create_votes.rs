@@ -1,3 +1,4 @@
+use crate::m20250313_030734_create_users::Users;
 use sea_orm_migration::{prelude::*, schema::*};
 
 #[derive(DeriveMigrationName)]
@@ -29,21 +30,29 @@ impl MigrationTrait for Migration {
                 Table::create()
                     .table(Votes::Table)
                     .if_not_exists()
-                    .col(pk_auto(Votes::Id))
-                    .col(integer(Votes::UserId).not_null())
-                    .col(custom_type(
-                        Votes::VoteType,
-                        VoteType::Type.to_string(),
-                        VoteType::Type.to_string(),
-                    ))
-                    .col(integer(Votes::TargetId).not_null())
-                    .col(custom_type(
-                        Votes::TargetType,
-                        TargetType::Type.to_string(),
-                        TargetType::Type.to_string(),
-                    ))
                     .col(
-                        timestamp_with_time_zone(Votes::CreatedAt)
+                        ColumnDef::new(Votes::Id)
+                            .integer()
+                            .not_null()
+                            .auto_increment()
+                            .primary_key(),
+                    )
+                    .col(ColumnDef::new(Votes::UserId).integer().not_null())
+                    .col(
+                        ColumnDef::new(Votes::VoteType)
+                            .custom(VoteType::Type.to_string())
+                            .not_null(),
+                    )
+                    .col(ColumnDef::new(Votes::TargetId).integer().not_null())
+                    .col(
+                        ColumnDef::new(Votes::TargetType)
+                            .custom(TargetType::Type.to_string())
+                            .not_null(),
+                    )
+                    .col(
+                        ColumnDef::new(Votes::CreatedAt)
+                            .timestamp_with_time_zone()
+                            .not_null()
                             .default(Expr::current_timestamp()),
                     )
                     .foreign_key(
@@ -74,7 +83,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Votes {
+pub enum Votes {
     Table,
     Id,
     UserId,
@@ -85,13 +94,7 @@ enum Votes {
 }
 
 #[derive(DeriveIden)]
-enum Users {
-    Table,
-    Id,
-}
-
-#[derive(DeriveIden)]
-enum VoteType {
+pub enum VoteType {
     #[sea_orm(iden = "vote_type")]
     Type,
     #[sea_orm(iden = "upvote")]
@@ -101,7 +104,7 @@ enum VoteType {
 }
 
 #[derive(DeriveIden)]
-enum TargetType {
+pub enum TargetType {
     #[sea_orm(iden = "target_type")]
     Type,
     #[sea_orm(iden = "question")]
