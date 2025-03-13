@@ -5,29 +5,70 @@ import { api } from '../services/api';
 import RichTextEditor from '../components/rich-text-editor';
 import AnswerEditor from '../components/answer-editor';
 
-export default function QuestionDetail() {
+interface QuestionDetailProps {
+  questionId: number;
+  onBack: () => void;
+}
+
+export default function QuestionDetail({ questionId, onBack }: QuestionDetailProps) {
   const [question, setQuestion] = useState<Question | null>(null);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [loading, setLoading] = useState(true);
-  const [answer, setAnswer] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    api.questions.getById(1).then(data => {
-      setQuestion(data);
-      setLoading(false);
-    });
-  }, []);
+    
+    setLoading(false);
+    setError('Question not found');
+  }, [questionId]);
 
-  const handleAnswerSubmit = (answerContent: string) => {
-    // Handle answer submission here
-    console.log('Answer submitted:', answerContent);
+  const handleAnswerSubmit = async (answerContent: string) => {
+    if (submitting || !answerContent.trim()) return;
+
+    setSubmitting(true);
+    try {
+      await api.answers.create({
+        questionId,
+        content: answerContent
+      });
+      const updatedAnswers = await api.answers.getByQuestionId(questionId);
+      setAnswers(updatedAnswers);
+    } catch (err) {
+      console.error('Failed to submit answer:', err);
+    } finally {
+      setSubmitting(false);
+    }
   };
+
+  if (error) {
+    return (
+      <div className="pt-20 flex justify-center">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="w-full max-w-5xl p-8 bg-white rounded-2xl shadow-lg"
+        >
+          <div className="text-center">
+            <h2 className="text-xl font-semibold text-gray-700 mb-4">Error</h2>
+            <p className="text-gray-600">{error}</p>
+            <button
+              onClick={onBack}
+              className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+            >
+              Go Back
+            </button>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
 
   if (loading || !question) {
     return (
       <div className="pt-20 flex justify-center">
-        <motion.div 
-          initial={{ opacity: 0 }} 
+        <motion.div
+          initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="w-full max-w-5xl p-8 bg-white/50 backdrop-blur-xl rounded-2xl animate-pulse"
         >
@@ -38,7 +79,7 @@ export default function QuestionDetail() {
   }
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="pt-20 pb-12 px-4 flex justify-center"
@@ -47,14 +88,14 @@ export default function QuestionDetail() {
         <div className="bg-white shadow-lg rounded-2xl overflow-hidden border border-indigo-100">
           <div className="p-8 border-b border-indigo-100">
             <div className="flex flex-col gap-4">
-              <motion.h1 
+              <motion.h1
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="text-3xl font-bold text-slate-900"
               >
                 {question.title}
               </motion.h1>
-              
+
               <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500">
                 <span className="flex items-center gap-2">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -76,7 +117,7 @@ export default function QuestionDetail() {
           <div className="p-8">
             <div className="flex gap-8">
               <div className="flex flex-col items-center gap-2">
-                <motion.button 
+                <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   className="p-3 hover:bg-indigo-50 rounded-xl transition-colors"
@@ -85,10 +126,10 @@ export default function QuestionDetail() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
                   </svg>
                 </motion.button>
-                
+
                 <span className="text-2xl font-bold text-slate-700">42</span>
-                
-                <motion.button 
+
+                <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   className="p-3 hover:bg-indigo-50 rounded-xl transition-colors"
@@ -119,8 +160,8 @@ export default function QuestionDetail() {
                            prose-code:px-2 prose-code:py-0.5 prose-code:rounded
                            prose-pre:bg-indigo-50 prose-pre:p-4 prose-pre:rounded-lg
                            prose-a:text-indigo-600 hover:prose-a:text-indigo-700"
-                dangerouslySetInnerHTML={{ __html: question.description }}
-              />
+                  dangerouslySetInnerHTML={{ __html: question.description }}
+                />
 
                 {/* Tags */}
                 <div className="flex flex-wrap gap-2 mt-6">
@@ -145,8 +186,8 @@ export default function QuestionDetail() {
                       </button>
                     ))}
                   </div>
-                  
-                  <motion.div 
+
+                  <motion.div
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     className="flex items-center gap-3 bg-indigo-50 rounded-xl p-4"

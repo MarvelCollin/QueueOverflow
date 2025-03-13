@@ -60,7 +60,6 @@ export const mockComments: Comment[] = [
   }
 ];
 
-// Add vote counts for questions and answers
 export const mockVotes = {
   questions: {
     1: { upvotes: 42, downvotes: 3 },

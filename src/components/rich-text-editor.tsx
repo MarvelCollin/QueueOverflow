@@ -1,19 +1,14 @@
 import { useState, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import Prism from 'prismjs';
-
-// Import additional languages that you need
 import "prismjs/components/prism-javascript";
 import "prismjs/components/prism-typescript";
 import "prismjs/components/prism-css";
 import "prismjs/components/prism-rust";
 import "prismjs/components/prism-sql";
-// ... other languages as needed
+import "prismjs/themes/prism.css"; 
 
-// Import a theme (optional)
-import "prismjs/themes/prism.css"; // Basic theme
-// or another theme:
-// import "prismjs/themes/prism-tomorrow.css";
+
 
 interface RichTextEditorProps {
     value: string;
