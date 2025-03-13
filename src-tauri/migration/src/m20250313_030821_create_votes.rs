@@ -8,24 +8,6 @@ pub struct Migration;
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .create_type(
-                Type::create()
-                    .as_enum(VoteType::Type)
-                    .values([VoteType::Upvote, VoteType::Downvote])
-                    .to_owned(),
-            )
-            .await?;
-
-        manager
-            .create_type(
-                Type::create()
-                    .as_enum(TargetType::Type)
-                    .values([TargetType::Question, TargetType::Answer])
-                    .to_owned(),
-            )
-            .await?;
-
-        manager
             .create_table(
                 Table::create()
                     .table(Votes::Table)
@@ -40,14 +22,16 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Votes::UserId).integer().not_null())
                     .col(
                         ColumnDef::new(Votes::VoteType)
-                            .custom(VoteType::Type.to_string())
-                            .not_null(),
+                            .string()
+                            .not_null()
+                            .comment("Either 'upvote' or 'downvote'")
                     )
                     .col(ColumnDef::new(Votes::TargetId).integer().not_null())
                     .col(
                         ColumnDef::new(Votes::TargetType)
-                            .custom(TargetType::Type.to_string())
-                            .not_null(),
+                            .string()
+                            .not_null()
+                            .comment("Either 'question' or 'answer'")
                     )
                     .col(
                         ColumnDef::new(Votes::CreatedAt)
@@ -70,14 +54,6 @@ impl MigrationTrait for Migration {
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
             .drop_table(Table::drop().table(Votes::Table).to_owned())
-            .await?;
-
-        manager
-            .drop_type(Type::drop().name(VoteType::Type).to_owned())
-            .await?;
-
-        manager
-            .drop_type(Type::drop().name(TargetType::Type).to_owned())
             .await
     }
 }
@@ -95,8 +71,7 @@ pub enum Votes {
 
 #[derive(DeriveIden)]
 pub enum VoteType {
-    #[sea_orm(iden = "vote_type")]
-    Type,
+    Table,
     #[sea_orm(iden = "upvote")]
     Upvote,
     #[sea_orm(iden = "downvote")]
@@ -105,8 +80,7 @@ pub enum VoteType {
 
 #[derive(DeriveIden)]
 pub enum TargetType {
-    #[sea_orm(iden = "target_type")]
-    Type,
+    Table,
     #[sea_orm(iden = "question")]
     Question,
     #[sea_orm(iden = "answer")]

@@ -8,15 +8,6 @@ pub struct Migration;
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .create_type(
-                Type::create()
-                    .as_enum(ParentType::Type)
-                    .values([ParentType::Question, ParentType::Answer])
-                    .to_owned(),
-            )
-            .await?;
-
-        manager
             .create_table(
                 Table::create()
                     .table(Comments::Table)
@@ -39,8 +30,9 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Comments::ParentId).integer().not_null())
                     .col(
                         ColumnDef::new(Comments::ParentType)
-                            .custom(ParentType::Type.to_string())
-                            .not_null(),
+                            .string()
+                            .not_null()
+                            .comment("Either 'question' or 'answer'")
                     )
                     .foreign_key(
                         ForeignKey::create()
@@ -57,10 +49,6 @@ impl MigrationTrait for Migration {
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
             .drop_table(Table::drop().table(Comments::Table).to_owned())
-            .await?;
-
-        manager
-            .drop_type(Type::drop().name(ParentType::Type).to_owned())
             .await
     }
 }
@@ -78,8 +66,7 @@ pub enum Comments {
 
 #[derive(DeriveIden)]
 pub enum ParentType {
-    #[sea_orm(iden = "parent_type")]
-    Type,
+    Table,
     #[sea_orm(iden = "question")]
     Question,
     #[sea_orm(iden = "answer")]
