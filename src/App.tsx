@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import Header from './components/Header';
-import Sidebar from './components/Sidebar';
-import Questions from './pages/Questions';
-import QuestionDetail from './pages/QuestionDetail';
+import Header from './components/header';
+import Sidebar from './components/side-bar';
+import Questions from './pages/question';
+import QuestionDetail from './pages/question-detail';
 import "./index.css";
 
 function App() {

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Question } from '../types';
 import { api } from '../services/api';
-import QuestionCard from '../components/QuestionCard';
+import QuestionCard from '../components/question-cards';
 
 interface QuestionsProps {
   onQuestionClick: (questionId: number) => void;

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import RichTextEditor from './RichTextEditor';
+import RichTextEditor from './rich-text-editor';
 
 interface AnswerEditorProps {
   onSubmit: (answer: string) => void;

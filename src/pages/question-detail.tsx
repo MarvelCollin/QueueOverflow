@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Question, Answer } from '../types';
 import { api } from '../services/api';
-import RichTextEditor from '../components/RichTextEditor';
-import AnswerEditor from '../components/AnswerEditor';
+import RichTextEditor from '../components/rich-text-editor';
+import AnswerEditor from '../components/answer-editor';
 
 export default function QuestionDetail() {
   const [question, setQuestion] = useState<Question | null>(null);
