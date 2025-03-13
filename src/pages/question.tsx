@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Question } from '../types';
 import { api } from '../services/api';
 import QuestionCard from '../components/question-cards';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface QuestionsProps {
   onQuestionClick: (questionId: number) => void;
@@ -11,6 +12,7 @@ interface QuestionsProps {
 export default function Questions({ onQuestionClick }: QuestionsProps) {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     api.questions.getAll()
@@ -19,6 +21,10 @@ export default function Questions({ onQuestionClick }: QuestionsProps) {
         setLoading(false);
       });
   }, []);
+
+  const handleAskQuestion = () => {
+    navigate('/ask-question');
+  };
 
   return (
     <motion.div
@@ -34,7 +40,9 @@ export default function Questions({ onQuestionClick }: QuestionsProps) {
           <p className="text-theme-text-muted mt-1">{questions.length} questions</p>
         </div>
         
-        <button className="bg-gradient-to-r from-theme-accent-primary to-theme-accent-secondary
+        <button 
+          onClick={handleAskQuestion}
+          className="bg-gradient-to-r from-theme-accent-primary to-theme-accent-secondary
                        text-theme-text-primary px-6 py-2.5 rounded-xl font-medium 
                        hover:opacity-90 transition-all duration-300">
           Ask Question
@@ -53,7 +61,7 @@ export default function Questions({ onQuestionClick }: QuestionsProps) {
               </div>
             ))}
           </div>
-        ) : (
+        ) : questions.length > 0 ? (
           <div className="space-y-4">
             {questions.map((question, index) => (
               <QuestionCard 
@@ -63,6 +71,16 @@ export default function Questions({ onQuestionClick }: QuestionsProps) {
                 onClick={() => onQuestionClick(question.id)}
               />
             ))}
+          </div>
+        ) : (
+          <div className="text-center py-10">
+            <p className="text-theme-text-muted mb-4">No questions found</p>
+            <button
+              onClick={handleAskQuestion}
+              className="bg-primary-color text-white px-4 py-2 rounded-md hover:bg-primary-hover transition-colors"
+            >
+              Be the first to ask a question
+            </button>
           </div>
         )}
       </div>

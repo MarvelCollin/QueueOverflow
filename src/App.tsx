@@ -4,7 +4,7 @@ import Header from './components/header';
 import Sidebar from './components/side-bar';
 import Questions from './pages/question';
 import QuestionDetail from './pages/question-detail';
-import "./index.css";
+import "./App.css";
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
