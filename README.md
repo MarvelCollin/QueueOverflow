@@ -10,3 +10,4 @@ npm run tauri dev <br>
 have fun <br>
 
 this is from the testing branch
+from testing2
