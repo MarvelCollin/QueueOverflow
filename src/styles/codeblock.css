@@ -1,0 +1,69 @@
+pre[contenteditable="true"] {
+  outline: none;
+  cursor: text;
+  color: white !important;
+}
+
+pre[contenteditable="true"]:focus {
+  @apply ring-1 ring-indigo-500/30;
+}
+
+.token {
+  color: white !important;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #a8b4c6 !important;
+}
+
+.token.punctuation {
+  color: #e5e7eb !important;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol {
+  color: #93c5fd !important;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin {
+  color: #bae6fd !important;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.token.variable {
+  color: #e5e7eb !important;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: #93c5fd !important;
+}
+
+.token.function,
+.token.class-name {
+  color: #fde68a !important;
+}
+
+.token.regex,
+.token.important {
+  color: #fdba74 !important;
+}
+
+code[class*="language-"],
+pre[class*="language-"] {
+  color: white !important;
+}

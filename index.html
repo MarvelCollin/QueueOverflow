@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QueueOverflow</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'theme-bg-primary': '#ffffff',
+              'theme-bg-secondary': '#f9fafb',
+              'theme-bg-card': '#ffffff',
+              'theme-text-primary': '#1f2937',
+              'theme-text-secondary': '#4b5563',
+              'theme-text-muted': '#9ca3af',
+              'theme-accent-primary': '#6366f1',
+              'theme-accent-secondary': '#8b5cf6',
+              'theme-accent-blue': '#3b82f6',
+              'theme-border-light': '#e5e7eb',
+            },
+          }
+        }
+      }
+    </script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

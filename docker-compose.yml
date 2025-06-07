@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: queueoverflow
+      POSTGRES_PASSWORD: queueoverflow
+      POSTGRES_DB: queueoverflow
+    ports:
+      - "2002:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U queueoverflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: on-failure
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+      - ./src-tauri/src:/app/src-tauri/src
+      - ./src-tauri/entities:/app/src-tauri/entities
+      - ./src-tauri/migration:/app/src-tauri/migration
+      - ./vite.config.ts:/app/vite.config.ts
+      - ./tsconfig.json:/app/tsconfig.json
+      - ./tsconfig.node.json:/app/tsconfig.node.json
+      - cargo_cache:/root/.cargo
+      - node_modules:/app/node_modules
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    ports:
+      - "2001:1420"
+      - "3333:3333"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgres://queueoverflow:queueoverflow@postgres:5432/queueoverflow
+      - JWT_SECRET=kolin123
+      - DOCKER_ENV=true
+      - DISPLAY=${DISPLAY:-:0}
+      - WEBKIT_DISABLE_SANDBOX=1
+      - WEBKIT_FORCE_SANDBOX=0
+    ipc: host
+    privileged: true
+
+volumes:
+  postgres_data:
+  node_modules:
+  cargo_cache: 
