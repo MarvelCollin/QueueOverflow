@@ -24,7 +24,7 @@ sea-orm-migration = { version = "1.1.7", features = ["runtime-tokio-rustls", "sq
 dotenv = "0.15.0"
 env_logger = "0.10.0"
 argon2 = "0.5"
-jsonwebtoken = "8.3"
+jsonwebtoken = "10.3"
 rand_core = "0.6"
 chrono = "0.4"
 anyhow = "1.0"
